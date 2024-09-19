@@ -1,8 +1,9 @@
 ## Projeto consiste de:
-.
-├── notebooks/
-│   ├── eda.ipynb
-│   ├── ml_training.ipynb
+```
+.  
+├── notebooks/  
+│   ├── eda.ipynb  
+│   ├── ml_training.ipynb  
 │   └── catboost_info
 ├── data/
 │   ├── synthetic_delivery_requests_modified.csv
@@ -11,7 +12,8 @@
 ├── .gitignore
 ├── .python-version
 ├── poetry.lock
-└── pyproject.toml  
+└── pyproject.toml
+```
   
 Na pasta notebook estão todos os notebooks de Análise Exploratória e de treinamento do modelo.  
 Para entender o processo comece abindo o arquivo EDA.ipynb onde estão todas as análises e transformações até a exportação dos dados limpos no formato parquet.  
