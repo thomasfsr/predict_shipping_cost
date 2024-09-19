@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "dojo"
+version = "0.1.0"
+description = ""
+authors = ["Thomás Freire <thomas.fsr@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+ipykernel = "^6.29.5"
+pandas = "^2.2.2"
+seaborn = "^0.13.2"
+scikit-learn = "^1.5.1"
+networkx = "^3.3"
+pyvis = "^0.3.2"
+category-encoders = "^2.6.3"
+catboost = "^1.2.6"
+pyarrow = "^17.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
