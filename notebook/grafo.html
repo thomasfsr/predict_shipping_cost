@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 1000px;
+                 height: 700px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 1000px;
+                 height: 700px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "white"}, "id": "23575450", "label": "23575450", "shape": "dot", "size": 54}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "5613005", "label": "5613005", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "23575916", "label": "23575916", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99711082", "label": "99711082", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "95800068", "label": "95800068", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "72880218", "label": "72880218", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1454000", "label": "1454000", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "13010061", "label": "13010061", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99250000", "label": "99250000", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "71675310", "label": "71675310", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "90550000", "label": "90550000", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "60175070", "label": "60175070", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "92330000", "label": "92330000", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "90570080", "label": "90570080", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "80010180", "label": "80010180", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "88010070", "label": "88010070", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "9750700", "label": "9750700", "shape": "dot", "size": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "90040001", "label": "90040001", "shape": "dot", "size": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "4005004", "label": "4005004", "shape": "dot", "size": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "90030130", "label": "90030130", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1153000", "label": "1153000", "shape": "dot", "size": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "59042250", "label": "59042250", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1310100", "label": "1310100", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "15085440", "label": "15085440", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "12070410", "label": "12070410", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1310200", "label": "1310200", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "69900004", "label": "69900004", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "12070500", "label": "12070500", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1048100", "label": "1048100", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99705576", "label": "99705576", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "22640100", "label": "22640100", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "22640102", "label": "22640102", "shape": "dot", "size": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99700252", "label": "99700252", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "94425030", "label": "94425030", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99960000", "label": "99960000", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "95560000", "label": "95560000", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "78715233", "label": "78715233", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1451011", "label": "1451011", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "36080060", "label": "36080060", "shape": "dot", "size": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "88102300", "label": "88102300", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "93805772", "label": "93805772", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "91360001", "label": "91360001", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "13335520", "label": "13335520", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99711268", "label": "99711268", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99010051", "label": "99010051", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "80060205", "label": "80060205", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "90480000", "label": "90480000", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99040000", "label": "99040000", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "5407002", "label": "5407002", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "11675560", "label": "11675560", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "88085201", "label": "88085201", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "86465000", "label": "86465000", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "22631390", "label": "22631390", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "91010004", "label": "91010004", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "12070140", "label": "12070140", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "7097380", "label": "7097380", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "14026900", "label": "14026900", "shape": "dot", "size": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "88010000", "label": "88010000", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99704084", "label": "99704084", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "82510360", "label": "82510360", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "91010006", "label": "91010006", "shape": "dot", "size": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "93010030", "label": "93010030", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "3110010", "label": "3110010", "shape": "dot", "size": 31}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1311903", "label": "1311903", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1310930", "label": "1310930", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "91787510", "label": "91787510", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "94100250", "label": "94100250", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99010910", "label": "99010910", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "91349900", "label": "91349900", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99064415", "label": "99064415", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99010040", "label": "99010040", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "13560470", "label": "13560470", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "5145000", "label": "5145000", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1423050", "label": "1423050", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "5613090", "label": "5613090", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99060300", "label": "99060300", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99054070", "label": "99054070", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "98870000", "label": "98870000", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "9190210", "label": "9190210", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99064000", "label": "99064000", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "90420000", "label": "90420000", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "5398050", "label": "5398050", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99054335", "label": "99054335", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "90450070", "label": "90450070", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "99704048", "label": "99704048", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "5762260", "label": "5762260", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "90450090", "label": "90450090", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "90450080", "label": "90450080", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "88131410", "label": "88131410", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "13831012", "label": "13831012", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "88030030", "label": "88030030", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "55641580", "label": "55641580", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1327900", "label": "1327900", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "96789406", "label": "96789406", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "80800800", "label": "80800800", "shape": "dot", "size": 8}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "90020902", "label": "90020902", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "11674771", "label": "11674771", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "14234235", "label": "14234235", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "2047051", "label": "2047051", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "81330358", "label": "81330358", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "59015900", "label": "59015900", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "95110900", "label": "95110900", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "0", "label": "0", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "13315000", "label": "13315000", "shape": "dot", "size": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "13300083", "label": "13300083", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1311000", "label": "1311000", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "94085010", "label": "94085010", "shape": "dot", "size": 0}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "89010203", "label": "89010203", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "91340001", "label": "91340001", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "91410400", "label": "91410400", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "38060000", "label": "38060000", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "91140310", "label": "91140310", "shape": "dot", "size": 1}]);
+                  edges = new vis.DataSet([{"from": "23575450", "to": "5613005", "width": 1}, {"from": "23575450", "to": "23575916", "width": 1}, {"from": "23575450", "to": "99711082", "width": 1}, {"from": "23575450", "to": "95800068", "width": 1}, {"from": "23575450", "to": "72880218", "width": 1}, {"from": "23575450", "to": "1454000", "width": 1}, {"from": "23575450", "to": "13010061", "width": 1}, {"from": "23575450", "to": "99250000", "width": 1}, {"from": "23575450", "to": "71675310", "width": 1}, {"from": "23575450", "to": "90550000", "width": 1}, {"from": "23575450", "to": "60175070", "width": 1}, {"from": "23575450", "to": "92330000", "width": 1}, {"from": "23575450", "to": "90570080", "width": 1}, {"from": "23575450", "to": "80010180", "width": 1}, {"from": "23575450", "to": "88010070", "width": 1}, {"from": "23575450", "to": "9750700", "width": 1}, {"from": "23575450", "to": "90040001", "width": 1}, {"from": "23575450", "to": "4005004", "width": 1}, {"from": "23575450", "to": "90030130", "width": 1}, {"from": "23575450", "to": "1153000", "width": 1}, {"from": "23575450", "to": "59042250", "width": 1}, {"from": "23575450", "to": "1310100", "width": 1}, {"from": "23575450", "to": "15085440", "width": 1}, {"from": "23575450", "to": "12070410", "width": 1}, {"from": "23575450", "to": "1310200", "width": 1}, {"from": "23575450", "to": "69900004", "width": 1}, {"from": "23575450", "to": "12070500", "width": 1}, {"from": "23575450", "to": "1048100", "width": 1}, {"from": "23575450", "to": "99705576", "width": 1}, {"from": "23575450", "to": "22640100", "width": 1}, {"from": "23575450", "to": "22640102", "width": 1}, {"from": "23575450", "to": "99700252", "width": 1}, {"from": "23575450", "to": "94425030", "width": 1}, {"from": "23575450", "to": "99960000", "width": 1}, {"from": "23575450", "to": "95560000", "width": 1}, {"from": "23575450", "to": "78715233", "width": 1}, {"from": "23575450", "to": "1451011", "width": 1}, {"from": "23575450", "to": "36080060", "width": 1}, {"from": "23575450", "to": "88102300", "width": 1}, {"from": "23575450", "to": "93805772", "width": 1}, {"from": "23575450", "to": "91360001", "width": 1}, {"from": "23575450", "to": "13335520", "width": 1}, {"from": "23575450", "to": "99711268", "width": 1}, {"from": "23575450", "to": "99010051", "width": 1}, {"from": "23575450", "to": "80060205", "width": 1}, {"from": "23575450", "to": "90480000", "width": 1}, {"from": "23575450", "to": "99040000", "width": 1}, {"from": "23575450", "to": "5407002", "width": 1}, {"from": "23575450", "to": "11675560", "width": 1}, {"from": "23575450", "to": "88085201", "width": 1}, {"from": "23575450", "to": "86465000", "width": 1}, {"from": "23575450", "to": "22631390", "width": 1}, {"from": "23575450", "to": "91010004", "width": 1}, {"from": "23575450", "to": "12070140", "width": 1}, {"from": "23575450", "to": "7097380", "width": 1}, {"from": "23575450", "to": "14026900", "width": 1}, {"from": "23575450", "to": "88010000", "width": 1}, {"from": "23575450", "to": "99704084", "width": 1}, {"from": "23575450", "to": "82510360", "width": 1}, {"from": "23575450", "to": "91010006", "width": 1}, {"from": "23575450", "to": "93010030", "width": 1}, {"from": "3110010", "to": "1311903", "width": 1}, {"from": "3110010", "to": "1310930", "width": 1}, {"from": "3110010", "to": "91787510", "width": 1}, {"from": "3110010", "to": "94100250", "width": 1}, {"from": "3110010", "to": "99010910", "width": 1}, {"from": "3110010", "to": "91349900", "width": 1}, {"from": "3110010", "to": "99064415", "width": 1}, {"from": "3110010", "to": "99010040", "width": 1}, {"from": "3110010", "to": "13560470", "width": 1}, {"from": "3110010", "to": "5145000", "width": 1}, {"from": "3110010", "to": "1423050", "width": 1}, {"from": "3110010", "to": "5613090", "width": 1}, {"from": "3110010", "to": "99060300", "width": 1}, {"from": "3110010", "to": "99054070", "width": 1}, {"from": "3110010", "to": "1153000", "width": 1}, {"from": "3110010", "to": "98870000", "width": 1}, {"from": "3110010", "to": "1310100", "width": 1}, {"from": "3110010", "to": "9190210", "width": 1}, {"from": "3110010", "to": "99064000", "width": 1}, {"from": "3110010", "to": "90420000", "width": 1}, {"from": "3110010", "to": "99700252", "width": 1}, {"from": "3110010", "to": "5398050", "width": 1}, {"from": "3110010", "to": "99054335", "width": 1}, {"from": "3110010", "to": "90450070", "width": 1}, {"from": "3110010", "to": "99704048", "width": 1}, {"from": "3110010", "to": "5762260", "width": 1}, {"from": "3110010", "to": "90450090", "width": 1}, {"from": "3110010", "to": "90450080", "width": 1}, {"from": "3110010", "to": "88131410", "width": 1}, {"from": "3110010", "to": "13831012", "width": 1}, {"from": "3110010", "to": "88030030", "width": 1}, {"from": "3110010", "to": "55641580", "width": 1}, {"from": "3110010", "to": "1327900", "width": 1}, {"from": "3110010", "to": "14026900", "width": 1}, {"from": "3110010", "to": "96789406", "width": 1}, {"from": "80800800", "to": "80010180", "width": 1}, {"from": "80800800", "to": "13010061", "width": 1}, {"from": "80800800", "to": "14026900", "width": 1}, {"from": "80800800", "to": "1153000", "width": 1}, {"from": "80800800", "to": "91010006", "width": 1}, {"from": "80800800", "to": "90020902", "width": 1}, {"from": "80800800", "to": "11674771", "width": 1}, {"from": "80800800", "to": "90040001", "width": 1}, {"from": "80800800", "to": "14234235", "width": 1}, {"from": "91010006", "to": "91010006", "width": 1}, {"from": "90040001", "to": "90040001", "width": 1}, {"from": "2047051", "to": "2047051", "width": 1}, {"from": "81330358", "to": "81330358", "width": 1}, {"from": "59015900", "to": "59015900", "width": 1}, {"from": "95110900", "to": "95110900", "width": 1}, {"from": "0", "to": "0", "width": 1}, {"from": "13315000", "to": "90550000", "width": 1}, {"from": "13315000", "to": "13300083", "width": 1}, {"from": "13315000", "to": "1311000", "width": 1}, {"from": "13315000", "to": "94085010", "width": 1}, {"from": "13315000", "to": "91010006", "width": 1}, {"from": "89010203", "to": "89010203", "width": 1}, {"from": "9750700", "to": "9750700", "width": 1}, {"from": "4005004", "to": "4005004", "width": 1}, {"from": "91340001", "to": "91340001", "width": 1}, {"from": "91410400", "to": "91410400", "width": 1}, {"from": "22640102", "to": "22640102", "width": 1}, {"from": "36080060", "to": "36080060", "width": 1}, {"from": "38060000", "to": "38060000", "width": 1}, {"from": "91140310", "to": "91140310", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
